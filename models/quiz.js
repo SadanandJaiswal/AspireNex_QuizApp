@@ -14,7 +14,7 @@ const QuizSchema = new Schema({
   },
   summary: {
     type: String,
-    maxlength: [500, 'Summary cannot be more than 500 characters!']
+    // maxlength: [500, 'Summary cannot be more than 500 characters!']
   },
   duration: {
     type: Number,
@@ -45,18 +45,19 @@ const QuizSchema = new Schema({
   },
   totalScore: {
     type: Number,
-    required: [true, 'Total score is required!']
+    // required: [true, 'Total score is required!']
+    default: 0
   },
-  quizQuestions: [{
-    type: Schema.Types.ObjectId,
-    ref: 'QuizQuestion',
-    validate: {
-      validator: function(v) {
-        return v == null || v.length > 0;
-      },
-      message: 'Quiz should contain at least one question!',
-    },
-  }]
+  // quizQuestions: [{
+  //   type: Schema.Types.ObjectId,
+  //   ref: 'QuizQuestion',
+  //   // validate: {
+  //   //   validator: function(v) {
+  //   //     return v == null || v.length > 0;
+  //   //   },
+  //   //   message: 'Quiz should contain at least one question!',
+  //   // },
+  // }]
 }, { timestamps: { createdAt: 'createdAt', updatedAt: 'updatedAt' } });
 
 // Ensure indexes are created
@@ -66,5 +67,6 @@ QuizSchema.index({ updatedAt: 1 });
 QuizSchema.index({ startAt: 1 });
 
 const Quiz = models.Quiz || model("Quiz", QuizSchema);
+// const Quiz = model("Quiz", QuizSchema);
 
 export default Quiz;

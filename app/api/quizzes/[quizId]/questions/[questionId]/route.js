@@ -27,10 +27,10 @@ export const PUT = async (request, { params }) => {
         await connectToDB();
 
         const { questionId } = params;
-        const questionData = await request.json();
+        const {updateQuestionData} = await request.json();
 
         // Find the specific question by questionId and update it
-        const updatedQuestion = await QuizQuestion.findByIdAndUpdate(questionId, questionData, {
+        const updatedQuestion = await QuizQuestion.findByIdAndUpdate(questionId, updateQuestionData, {
             new: true, // Return the updated document
             runValidators: true, // Run Mongoose validators
         });

@@ -1,51 +1,54 @@
 // Import necessary modules and models
 import { connectToDB } from '@utils/database';
 import Quiz from '@models/Quiz'; // Assuming your Quiz model is defined in '@models/Quiz'
+import QuizQuestion from '@models/quizQuestion';
 
-export const GET = async (request) => {
+export const GET = async (request, { params }) => {
     try {
         await connectToDB();
+        
+        const { quizId } = params;
 
-        const quiz = await Quiz.findById().populate('quizQuestions');
-
-        if (!quiz) {
-            return new Response("Quiz Not Found", { status: 404 });
-        }
-
-        return new Response(JSON.stringify(quiz.quizQuestions), { status: 200 });
-    } catch (error) {
-        console.error(`Failed to fetch questions for quiz with ID ${params.quizId}`, error);
-        return new Response("Failed to fetch questions for quiz", { status: 500 });
-    }
-};
-
-export const POST = async (request) => {
-    try {
-        await connectToDB();
-
-        const { questionData } = request.json();
-
-        // Create a new quiz question
-        const newQuestion = new QuizQuestion({
-            ...questionData,
-        });
-
-        // Save the new question to the database
-        const savedQuestion = await newQuestion.save();
-
-        // Find the quiz by quizId and update quizQuestions array with new question's ObjectId
+        // Find the quiz by quizId and populate the quizQuestions array
         const quiz = await Quiz.findById(quizId);
 
         if (!quiz) {
             return new Response("Quiz Not Found", { status: 404 });
         }
 
-        quiz.quizQuestions.push(savedQuestion._id);
-        await quiz.save();
+        const questions = await QuizQuestion.find({quizId: quizId});
 
-        return new Response(JSON.stringify(savedQuestion), { status: 201 });
+        if (!questions) {
+            return new Response("Quiz Question Not Found", { status: 404 });
+        }
+
+        return new Response(JSON.stringify(questions), { status: 200 });
     } catch (error) {
-        console.error(`Failed to create or add question to quiz with ID ${params.quizId}`, error);
+        console.error(`Failed to fetch questions for quiz with ID ${params.quizId}`, error);
+        return new Response("Failed to fetch questions for quiz", { status: 500 });
+    }
+};
+
+export const POST = async (request, {params}) => {
+    try {
+        await connectToDB();
+
+        const {quizId} = params;
+        const { questionDataArray } = await request.json();
+        console.log(questionDataArray)
+
+        const quiz = await Quiz.findById(quizId);
+
+        if (!quiz) {
+            return new Response("Quiz Not Found", { status: 404 });
+        }
+
+        const savedQuestions = await QuizQuestion.insertMany(questionDataArray);
+
+        return new Response(JSON.stringify(savedQuestions), { status: 201 });
+        // return new Response("Successfull check", { status: 201 });
+    } catch (error) {
+        console.error(`Failed to create or add question to quiz with ID ${params.quizId}`, error.message);
         return new Response("Failed to create or add question to quiz", { status: 500 });
     }
 };
