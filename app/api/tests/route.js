@@ -1,9 +1,9 @@
-// import Test from "@models/test";
-import Test from "../../../models/test";
-// import Quiz from "@models/quiz";
-import Quiz from "../../../models/quiz";
-// import { connectToDB } from "@utils/database";
-import { connectToDB } from "../../../utils/database";
+import Test from "@models/test";
+// import Test from "../../../models/test";
+import Quiz from "@models/quiz";
+// import Quiz from "../../../models/quiz";
+import { connectToDB } from "@utils/database";
+// import { connectToDB } from "../../../utils/database";
 
 export const GET = async () => {
     try {

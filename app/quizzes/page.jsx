@@ -2,8 +2,8 @@
 
 import axios from "axios";
 import { useEffect, useState } from "react";
-// import QuizList from "@components/QuizList";
-import QuizList from "../../components/QuizList";
+import QuizList from "@components/QuizList";
+// import QuizList from "../../components/QuizList";
 import { useSession } from "next-auth/react";
 import Link from "next/link";
 

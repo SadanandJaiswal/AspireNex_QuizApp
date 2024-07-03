@@ -1,5 +1,7 @@
-import User from "../../../../models/user";
-import { connectToDB } from "../../../../utils/database";
+import User from "@models/user";
+import { connectToDB } from "@utils/database";
+// import User from "../../../../models/user";
+// import { connectToDB } from "../../../../utils/database";
 
 // Get the user Details
 export const GET = async (request, { params }) => {
