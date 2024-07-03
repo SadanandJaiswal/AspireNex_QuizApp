@@ -1,7 +1,9 @@
 import "@styles/globals.css";
 
-import Nav from "@components/Nav";
-import Provider from "@components/Provider";
+// import Nav from "@components/Nav";
+import Nav from "../components/Nav";
+// import Provider from "@components/Provider";
+import Provider from "../components/Provider";
 
 export const metadata = {
   title: "Quiz App",

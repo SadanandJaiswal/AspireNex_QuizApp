@@ -1,6 +1,6 @@
-import User from "@models/user";
-import Test from "@models/test";
-import { connectToDB } from "@utils/database";
+import User from "../../../../../models/user";
+import Test from "../../../../../models/test";
+import { connectToDB } from "../../../../../utils/database";
 
 export const GET = async (request, { params }) => {
     try {

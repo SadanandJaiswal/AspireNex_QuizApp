@@ -1,4 +1,5 @@
-import Nav from "@components/Nav";
+// import Nav from "@components/Nav";
+import Nav from "../components/Nav";
 import Link from "next/link";
 
 const Home = () => (

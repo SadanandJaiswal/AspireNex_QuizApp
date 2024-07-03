@@ -1,5 +1,5 @@
-import Quiz from "@models/quiz";
-import { connectToDB } from "@utils/database";
+import Quiz from "../../../../models/quiz";
+import { connectToDB } from "../../../../utils/database";
 
 export const GET = async (request, { params }) => {
     try {

@@ -3,7 +3,7 @@
 import axios from "axios";
 import React, { useState, useEffect } from "react";
 import { useSession } from "next-auth/react";
-import QuestionMaker from "@components/QuestionMaker";
+import QuestionMaker from "../../../components/QuestionMaker";
 
 const CreateQuiz = () => {
   const { data: session } = useSession();

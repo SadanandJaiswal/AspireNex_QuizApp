@@ -21,7 +21,13 @@ const Nav = () => {
 
   return (
     <nav className="flex-between w-full mb-16 pt-3">
-    <Link href="/" className="flex gap-2 flex-center">
+      <Link href="/" className="flex items-center gap-2">
+      <div className="flex items-center">
+        <span className="text-2xl font-bold text-indigo-600">Quiz</span>
+        <span className="text-2xl font-bold text-yellow-500">App</span>
+      </div>
+    </Link>
+    {/* <Link href="/" className="flex gap-2 flex-center">
       <Image
         src="/assets/images/logo.svg"
         alt="logo"
@@ -30,7 +36,7 @@ const Nav = () => {
         className="object-contain"
       />
       <p className="logo_text">Promptopia</p>
-    </Link>
+    </Link> */}
 
     {/* Desktop Navigation */}
     <div className="sm:flex hidden">

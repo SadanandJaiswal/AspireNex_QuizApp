@@ -1,6 +1,6 @@
 import React from 'react'
 import Link from "next/link";
-import QuizListCard from "@components/QuizListCard";
+import QuizListCard from "./QuizListCard";
 
 const QuizList = ({quizData, heading}) => {
   return (
