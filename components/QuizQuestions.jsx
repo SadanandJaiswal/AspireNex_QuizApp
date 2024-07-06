@@ -3,8 +3,10 @@
 import React, { useState, useEffect } from 'react';
 import { signIn, signOut, useSession, getProviders } from "next-auth/react";
 import axios from 'axios';
+import { toast } from 'react-toastify';
 
-const QuizQuestions = ({ quizQuestionData, quizId, positiveScore, negativeScore }) => {
+
+const QuizQuestions = ({ quizQuestionData, quizId, positiveScore, negativeScore, handleSubmitMsg }) => {
   const { data: session } = useSession();
   const [currentQuestionIndex, setCurrentQuestionIndex] = useState(0); 
   const [answers, setAnswers] = useState([]); 
@@ -26,17 +28,17 @@ const QuizQuestions = ({ quizQuestionData, quizId, positiveScore, negativeScore 
   },[])
 
 
-  useEffect(()=>{
-    console.log(numericalAnswer)
-  },[numericalAnswer])
+  // useEffect(()=>{
+  //   console.log(numericalAnswer)
+  // },[numericalAnswer])
 
-  useEffect(()=>{
-    console.log('selectedValues ',selectedValues)
-  },[selectedValues])
+  // useEffect(()=>{
+  //   console.log('selectedValues ',selectedValues)
+  // },[selectedValues])
   
-  useEffect(()=>{
-    console.log('answers ',answers)
-  },[answers])
+  // useEffect(()=>{
+  //   console.log('answers ',answers)
+  // },[answers])
 
   useEffect(() => {
     if (quizQuestionData && quizQuestionData.length > 0) {
@@ -60,28 +62,39 @@ const QuizQuestions = ({ quizQuestionData, quizId, positiveScore, negativeScore 
     setSelectedValues([])
   },[currentQuestionIndex])
 
-  const addCurrentAnswerToAnswers = () =>{
+  const addCurrentAnswerToAnswers = () =>{  // updated , checking
     const updatedAnswers = [...answers];
-    let ansSelected = [];
-    if(currentQuestionType === 'numerical'){
-      const stringNumericalAnswer = numericalAnswer.toString();
-      ansSelected = [stringNumericalAnswer];
-    }else{
-      ansSelected = selectedValues;
-    }
 
     updatedAnswers[currentQuestionIndex] = {
       ...updatedAnswers[currentQuestionIndex],
       selectedAnswer: ansSelected, 
     };
     setAnswers(updatedAnswers);
-    console.log("success")
+    // console.log("success")
   }
+
+  // const addCurrentAnswerToAnswers = () =>{
+  //   const updatedAnswers = [...answers];
+  //   let ansSelected = [];
+  //   if(currentQuestionType === 'numerical'){
+  //     const stringNumericalAnswer = numericalAnswer.toString();
+  //     ansSelected = [stringNumericalAnswer];
+  //   }else{
+  //     ansSelected = selectedValues;
+  //   }
+
+  //   updatedAnswers[currentQuestionIndex] = {
+  //     ...updatedAnswers[currentQuestionIndex],
+  //     selectedAnswer: ansSelected, 
+  //   };
+  //   setAnswers(updatedAnswers);
+  //   console.log("success")
+  // }
 
   const goToNextQuestion = () => {
 
     
-    addCurrentAnswerToAnswers();
+    // addCurrentAnswerToAnswers();
 
     // calculateScore(indexToPass);
 
@@ -89,7 +102,10 @@ const QuizQuestions = ({ quizQuestionData, quizId, positiveScore, negativeScore 
       setCurrentQuestionIndex(currentQuestionIndex + 1);
     } else {
       // setCurrentQuestionIndex(0);
-      handleSubmit();
+      // setCurrentQuestionIndex(currentQuestionIndex + 1);
+      // setTimeout(() => {
+        handleSubmit();
+      // }, 100);
     }
 
     setSelectedValues([]);
@@ -101,33 +117,76 @@ const QuizQuestions = ({ quizQuestionData, quizId, positiveScore, negativeScore 
     }
   };
 
+  // const handleOptionChange = (event)=>{
+  //   const { type, value, checked } = event.target;
+
+  //   if (type === 'checkbox') {
+  //     if (checked) {
+  //       setSelectedValues((prevValues) => [...prevValues, value]);
+  //     } else {
+  //       setSelectedValues((prevValues) => prevValues.filter((val) => val !== value));
+  //     }
+  //   } else if (type === 'radio') {
+  //     console.log('option radio ', value);
+  //     setSelectedValues([value]);
+  //   }
+  // }
+
   const handleOptionChange = (event)=>{
     const { type, value, checked } = event.target;
 
+    const updatedAnswers = [...answers];
+
     if (type === 'checkbox') {
       if (checked) {
-        setSelectedValues((prevValues) => [...prevValues, value]);
+        updatedAnswers[currentQuestionIndex] = {
+          ...updatedAnswers[currentQuestionIndex],
+          selectedAnswer: [...(updatedAnswers[currentQuestionIndex].selectedAnswer || []), value],
+        };
       } else {
-        setSelectedValues((prevValues) => prevValues.filter((val) => val !== value));
+        updatedAnswers[currentQuestionIndex] = {
+          ...updatedAnswers[currentQuestionIndex],
+          selectedAnswer: (updatedAnswers[currentQuestionIndex].selectedAnswer || []).filter((val) => val !== value),
+        };
       }
     } else if (type === 'radio') {
-      console.log('option radio ', value);
-      setSelectedValues([value]);
+      updatedAnswers[currentQuestionIndex] = {
+        ...updatedAnswers[currentQuestionIndex],
+        selectedAnswer: [value],
+      };
     }
+
+    setAnswers(updatedAnswers);
   }
 
   const handleNumericalOption = (e)=>{
     setNumericalAnswer(e.target.value);
+    // const updatedAnswers = [...answers];
+    // updatedAnswers[currentQuestionIndex] = {
+    //   quizQuestionId: quizQuestionData[currentQuestionIndex]._id, // Replace with your quizQuestionId field
+    //   selectedAnswer: [numericalAnswer], // Replace with your selectedAnswer field or structure
+    // };
+    // setAnswers(updatedAnswers);
+
     const updatedAnswers = [...answers];
+
     updatedAnswers[currentQuestionIndex] = {
-      quizQuestionId: quizQuestionData[currentQuestionIndex]._id, // Replace with your quizQuestionId field
-      selectedAnswer: [numericalAnswer], // Replace with your selectedAnswer field or structure
+      ...updatedAnswers[currentQuestionIndex],
+      selectedAnswer: [e.target.value],
     };
+
     setAnswers(updatedAnswers);
+    
   }
 
   const handleSubmit = async ()=>{
     console.log('answer are here ', answers);
+
+    handleSubmitMsg();
+
+    // setTimeout(() => {
+    //   window.location.href = '/profile';
+    // }, 2000);
 
     try{
       const response = await axios.post(`/api/tests/`, {
@@ -138,17 +197,20 @@ const QuizQuestions = ({ quizQuestionData, quizId, positiveScore, negativeScore 
       if (response) {
         try {
           const scoreResponse = await axios.get(`/api/tests/${response.data._id}/score`);
-          console.log("Score calculated successfully", scoreResponse.data);
+          // console.log("Score calculated successfully", scoreResponse.data);
         } catch (scoreError) {
           console.error("Error calculating score:", scoreError.message);
+          toast.error("Error While Calculating Your Test Score")
         }
       } 
       
-      alert("test created succesfuly")
+      // alert("test created succesfuly")
+      toast.success("Your test Saved Successfully")
       window.location.href = '/profile';
     }
     catch (error) {
-      alert("error is occur");
+      // alert("error is occur");
+      toast.error("Error While Creating Your Test")
       console.error("Error Initializing Quiz:", error);
     }
   }

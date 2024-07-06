@@ -13,9 +13,9 @@ const QuestionMaker = ({quizId}) => {
         quizId: ''
     });
 
-    useEffect(()=>{
-        console.log("question is here ", questions);
-    },[questions])
+    // useEffect(()=>{
+    //     console.log("question is here ", questions);
+    // },[questions])
 
     const handleAddOption = () => {
         setCurrentQuestion(prevQuestion => ({
@@ -52,7 +52,7 @@ const QuestionMaker = ({quizId}) => {
     
     const handleCorrectAnswerChange = (event) => {
         const { type, value, checked } = event.target;
-        console.log(type, value, checked)
+        // console.log(type, value, checked)
         setCurrentQuestion(prevQuestion => {
             const stringIndex = value.toString();
             
@@ -103,7 +103,7 @@ const QuestionMaker = ({quizId}) => {
     };
 
     const handleSubmit = async ()=>{
-        console.log('questoin are here ', questions);
+        // console.log('questoin are here ', questions);
         try {
             const response = await axios.post(`/api/quizzes/${quizId}/questions`, {
                 questionDataArray: questions,
@@ -121,7 +121,7 @@ const QuestionMaker = ({quizId}) => {
                 });
             }
 
-            console.log("response ", response.data);
+            // console.log("response ", response.data);
 
             window.location.href = '/quizzes';
           } catch (error) {
@@ -130,9 +130,9 @@ const QuestionMaker = ({quizId}) => {
           }
     }
 
-    useEffect(()=>{
-        console.log(questions);
-    },[questions])
+    // useEffect(()=>{
+    //     // console.log(questions);
+    // },[questions])
 
     // Lorem ipsum dolor sit amet, consectetur adipisicing elit. Molestiae praesentium nobis quas iusto, totam vel non minima quae libero eius.
 

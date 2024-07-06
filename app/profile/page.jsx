@@ -38,8 +38,8 @@ const Profile = () => {
         setTests(response.data.tests);
         setUserDetail(response.data.user);
 
-        console.log('user is  here ', response.data.user)
-        console.log('test are here ', response.data.tests)
+        // console.log('user is  here ', response.data.user)
+        // console.log('test are here ', response.data.tests)
         // toast.success("Tests fetched successfully!");
       } catch (error) {
         setError(error.message);
@@ -52,9 +52,9 @@ const Profile = () => {
     fetchUserTests();
   }, [session, status]);
 
-  useEffect(()=>{
-    console.log("current test ", currentTest)
-  },[currentTest])
+  // useEffect(()=>{
+  //   console.log("current test ", currentTest)
+  // },[currentTest])
 
   const handleTestClick = (index)=>{
     setCurrentTest(tests[index]);

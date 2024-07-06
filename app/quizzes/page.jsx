@@ -21,7 +21,7 @@ const Quizzes = () => {
       try {
         setLoading(true);
         const response = await axios.get("/api/quizzes");
-        console.log('response ', response.data)
+        // console.log('response ', response.data)
         setQuizData(response.data);
       } catch (error) {
         alert("error is occur")
@@ -37,8 +37,8 @@ const Quizzes = () => {
 
   const handleMyQuiz = () => {
     setSelectedMyQuiz(true);
-    console.log(session.user.id);
-    console.log(quizData);
+    // console.log(session.user.id);
+    // console.log(quizData);
     const updatedArray = quizData.filter((quiz) => quiz.hostId === session?.user.id);
     setMyQuizData(updatedArray);
   }

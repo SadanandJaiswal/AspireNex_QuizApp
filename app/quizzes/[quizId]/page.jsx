@@ -9,6 +9,7 @@ import { useParams } from 'next/navigation'
 import QuizStater from "@components/QuizStater";
 // import QuizStater from "../../../components/quizStater";
 import QuizQuestions from "@components/QuizQuestions";
+import SubmitQuizMsg from "@components/SubmitQuizMsg";
 // import QuizQuestions from "../../../components/QuizQuestions";
 
 const Quiz = () => {
@@ -17,13 +18,14 @@ const Quiz = () => {
   const [quizData, setQuizData] = useState([]);
   const [quizQuestionData, setQuizQuestionData] = useState([]);
   const [testStarted, setTestStarted] = useState(false);
+  const [quizSubmit, setQuizSubmit] = useState(false);
 
   useEffect(() => {
     const fetchQuizData = async () => {
       try {
         setLoading(true);
         const response = await axios.get(`/api/quizzes/${quizId}`);
-        console.log('quizData ', response.data)
+        // console.log('quizData ', response.data)
         setQuizData(response.data);
       } catch (error) {
         alert("error is occur")
@@ -35,7 +37,7 @@ const Quiz = () => {
 
       try{
         const response = await axios.get(`/api/quizzes/${quizId}/questions`);
-        console.log('questions are here ', response.data)
+        // console.log('questions are here ', response.data)
         setQuizQuestionData(response.data);
       }
       catch (error) {
@@ -46,6 +48,10 @@ const Quiz = () => {
 
     fetchQuizData();
   }, []); 
+
+  const handleSubmitMsg = ()=>{
+    setQuizSubmit(true);
+  }
 
   return (
     loading?
@@ -61,8 +67,11 @@ const Quiz = () => {
             </button>
           </>
         }
-        {testStarted && 
-          <QuizQuestions quizQuestionData={quizQuestionData} quizId={quizId} positiveScore={quizData.positiveScore} negativeScore={quizData.negativeScore} />
+        {testStarted && !quizSubmit &&
+          <QuizQuestions quizQuestionData={quizQuestionData} quizId={quizId} positiveScore={quizData.positiveScore} negativeScore={quizData.negativeScore} handleSubmitMsg={handleSubmitMsg} />
+        }
+        {
+          quizSubmit && <SubmitQuizMsg/>
         }
       </div>
     )

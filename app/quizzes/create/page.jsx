@@ -18,7 +18,7 @@ const CreateQuiz = () => {
   });
 
   const [quizId, setQuizId] = useState("");
-  const [quizCreated, setQuizCreated] = useState(true);
+  const [quizCreated, setQuizCreated] = useState(false);
 
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -41,7 +41,7 @@ const CreateQuiz = () => {
       });
       setQuizCreated(true);
       setQuizId(response.data._id);
-      console.log("response ", response.data);
+      // console.log("response ", response.data);
       // console.log('response ', quizData)
     } catch (error) {
       alert("error is occur");
@@ -49,9 +49,9 @@ const CreateQuiz = () => {
     }
   };
 
-  useEffect(() => {
-    console.log("quiz id is ", quizId);
-  }, [quizId]);
+  // useEffect(() => {
+  //   console.log("quiz id is ", quizId);
+  // }, [quizId]);
 
   return (
     <div className="flex flex-col w-full justify-center items-center">
