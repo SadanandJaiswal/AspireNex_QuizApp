@@ -12,38 +12,24 @@ const QuizQuestionSchema = new Schema({
     required: [true, 'Question type is required!'],
     enum: ['single', 'multiple', 'boolean', 'text', 'numerical'],
   },
-  level: {
-    type: String,
-    // required: [true, 'Question level is required!'],
-    enum: ['easy', 'medium', 'hard'],
-    default: "easy"
+  images:{
+    type: [String]
   },
-  score: {
-    type: Number,
-    required: [true, 'Score is required!'],
-  },
-  negativeScore: {
-    type: Number,
-    default: 0
-  },
+  // level: {
+  //   type: String,
+  //   // required: [true, 'Question level is required!'],
+  //   enum: ['easy', 'medium', 'hard'],
+  //   default: "easy"
+  // },
   question_description: {
     type: String,
     required: [true, 'Question description is required!'],
-  },
-  numericalAnswer: {
-    type: Number,
-  },
-  booleanAnswer:{
-    type: String,
-  },
-  textAnswer: {
-    type: String,
   },
   options: {
     type: [String],
   },
   correctAnswer: {
-    type: [Number]
+    type: [String]
   }
 });
 

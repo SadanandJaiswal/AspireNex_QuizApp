@@ -1,5 +1,5 @@
 import { Schema, model, models } from 'mongoose';
-import QuizQuestionSchema from './quizQuestion';
+// import QuizQuestionSchema from './quizQuestion';
 
 const QuizSchema = new Schema({
   hostId: {
@@ -14,25 +14,29 @@ const QuizSchema = new Schema({
   },
   summary: {
     type: String,
-    // maxlength: [500, 'Summary cannot be more than 500 characters!']
   },
   duration: {
     type: Number,
     required: [true, 'Duration is required!'], // Duration in minutes
   },
+  totalQuestion: {
+    type: Number,
+    default: 0
+  },
+  positiveScore: {
+    type: Number,
+    required: [true, 'Score is required!'],
+  },
+  negativeScore: {
+    type: Number,
+    default: 0
+  },
   startAt: {
     type: Date,
     required: [true, 'Start time is required!'],
   },
-  endAt: {
-    type: Date,
-  },
   quizDeadline: {
     type: Date,
-  },
-  accessLifetime: {
-    type: Boolean,
-    default: false,
   },
   createdAt: {
     type: Date,
@@ -47,17 +51,7 @@ const QuizSchema = new Schema({
     type: Number,
     // required: [true, 'Total score is required!']
     default: 0
-  },
-  // quizQuestions: [{
-  //   type: Schema.Types.ObjectId,
-  //   ref: 'QuizQuestion',
-  //   // validate: {
-  //   //   validator: function(v) {
-  //   //     return v == null || v.length > 0;
-  //   //   },
-  //   //   message: 'Quiz should contain at least one question!',
-  //   // },
-  // }]
+  }
 }, { timestamps: { createdAt: 'createdAt', updatedAt: 'updatedAt' } });
 
 // Ensure indexes are created

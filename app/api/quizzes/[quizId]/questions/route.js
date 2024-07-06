@@ -1,6 +1,6 @@
 // Import necessary modules and models
 import { connectToDB } from '@utils/database';
-import Quiz from '@models/Quiz'; // Assuming your Quiz model is defined in '@models/Quiz'
+import Quiz from '@models/quiz'; // Assuming your Quiz model is defined in '@models/Quiz'
 import QuizQuestion from '@models/quizQuestion';
 // import { connectToDB } from '../../../../../utils/database';
 // import Quiz from '../../../../../models/Quiz'; // Assuming your Quiz model is defined in '@models/Quiz'
@@ -32,27 +32,34 @@ export const GET = async (request, { params }) => {
     }
 };
 
-export const POST = async (request, {params}) => {
+export const POST = async (request, { params }) => {
     try {
-        await connectToDB();
-
-        const {quizId} = params;
-        const { questionDataArray } = await request.json();
-        console.log(questionDataArray)
-
-        const quiz = await Quiz.findById(quizId);
-
-        if (!quiz) {
-            return new Response("Quiz Not Found", { status: 404 });
-        }
-
-        const savedQuestions = await QuizQuestion.insertMany(questionDataArray);
-
-        return new Response(JSON.stringify(savedQuestions), { status: 201 });
-        // return new Response("Successfull check", { status: 201 });
+      await connectToDB();
+  
+      const { quizId } = params;
+      const { questionDataArray } = await request.json();
+  
+      const quiz = await Quiz.findById(quizId);
+  
+      if (!quiz) {
+        return new Response("Quiz Not Found", { status: 404 });
+      }
+  
+      const savedQuestions = await QuizQuestion.insertMany(questionDataArray);
+  
+      const newTotalQuestions = quiz.totalQuestion + questionDataArray.length;
+      const newTotalScore = quiz.totalScore + (quiz.positiveScore * questionDataArray.length);
+  
+      quiz.totalQuestion = newTotalQuestions;
+      quiz.totalScore = newTotalScore;
+  
+      await quiz.save();
+  
+      return new Response(JSON.stringify(savedQuestions), { status: 201 });
     } catch (error) {
-        console.error(`Failed to create or add question to quiz with ID ${params.quizId}`, error.message);
-        return new Response("Failed to create or add question to quiz", { status: 500 });
+      console.error(`Failed to create or add question to quiz with ID ${params.quizId}`, error.message);
+      return new Response("Failed to create or add question to quiz", { status: 500 });
     }
 };
+  
 

@@ -5,7 +5,7 @@ export const GET = async () => {
     try {
         await connectToDB();
 
-        const quizzes = await Quiz.find();
+        const quizzes = await Quiz.find({ totalQuestion: { $gt: 0 } });
 
         return new Response(JSON.stringify(quizzes), { status: 200 });
     } catch (error) {

@@ -3,25 +3,19 @@
 import axios from "axios";
 import React, { useState, useEffect } from "react";
 
-const QuestionMaker = ({quizId, questionMark}) => {
+const QuestionMaker = ({quizId}) => {
     const [questions, setQuestions] = useState([]);
     const [currentQuestion, setCurrentQuestion] = useState({
         question_description: '',
         type: 'single',
-        numericalAnswer: null,
-        booleanAnswer: '',
-        textAnswer: null,
         options: ['',''],
         correctAnswer: [],
         quizId: ''
     });
 
-    const {score, negativeScore} = questionMark;
-
-    // useEffect(()=>{
-    //     score
-    // },[])
-
+    useEffect(()=>{
+        console.log("question is here ", questions);
+    },[questions])
 
     const handleAddOption = () => {
         setCurrentQuestion(prevQuestion => ({
@@ -52,30 +46,28 @@ const QuestionMaker = ({quizId, questionMark}) => {
 
     const handleNumericalChange = (e)=>{
         const { value } = e.target;
-        setCurrentQuestion(prevQuestion => ({...prevQuestion, numericalAnswer: Number(value) }));
-    };
-
-    const handleBooleanChange = (value) => {
-        setCurrentQuestion(prevQuestion => ({
-            ...prevQuestion,
-            booleanAnswer: value
-        }));
+        const numAns = value.toString();
+        setCurrentQuestion(prevQuestion => ({...prevQuestion, correctAnswer: [numAns] }));
     };
     
-    const handleCorrectAnswerChange = (index, isChecked) => {
+    const handleCorrectAnswerChange = (event) => {
+        const { type, value, checked } = event.target;
+        console.log(type, value, checked)
         setCurrentQuestion(prevQuestion => {
-            if (prevQuestion.type === 'single') {
-                return { ...prevQuestion, correctAnswer: [index] };
-            } else if (prevQuestion.type === 'multiple') {
-                const updatedCorrectAnswers = isChecked
-                    ? [...prevQuestion.correctAnswer, index]
-                    : prevQuestion.correctAnswer.filter(answer => answer !== index);
+            const stringIndex = value.toString();
+            
+            if (type === 'radio') {
+                return { ...prevQuestion, correctAnswer: [stringIndex] };
+            } else if (type === 'checkbox') {
+                const updatedCorrectAnswers = checked
+                    ? [...prevQuestion.correctAnswer, stringIndex]
+                    : prevQuestion.correctAnswer.filter(answer => answer !== stringIndex);
                 return { ...prevQuestion, correctAnswer: updatedCorrectAnswers };
             }
+            
             return prevQuestion;
         });
     };
-    
 
     const handleQuestionTypeChange = (e) => {
         const { value } = e.target;
@@ -87,15 +79,6 @@ const QuestionMaker = ({quizId, questionMark}) => {
             }else{
                 updatedQuestion.options = [];
             }
-            
-            if (value === 'boolean') {
-                updatedQuestion.booleanAnswer = '';
-            } else if (value === 'numerical') {
-                updatedQuestion.numericalAnswer = '';
-            }else if (value == "text"){
-                updatedQuestion.textAnswer = '';
-            }
-    
             return updatedQuestion;
         });
     };
@@ -107,24 +90,20 @@ const QuestionMaker = ({quizId, questionMark}) => {
             ...prevQuestions,
             {
                 ...currentQuestion,
-                quizId: quizId,
-                score: score,
-                negativeScore: negativeScore
+                quizId: quizId
             }
         ]);
 
         setCurrentQuestion({
             question_description: '',
             type: 'single',
-            numericalAnswer: null,
-            booleanAnswer: '',
-            textAnswer: null,
             options: ['',''],
             correctAnswer: []
         });
     };
 
     const handleSubmit = async ()=>{
+        console.log('questoin are here ', questions);
         try {
             const response = await axios.post(`/api/quizzes/${quizId}/questions`, {
                 questionDataArray: questions,
@@ -136,11 +115,9 @@ const QuestionMaker = ({quizId, questionMark}) => {
                 setCurrentQuestion({
                     question_description: '',
                     type: 'single',
-                    numericalAnswer: null,
-                    booleanAnswer: '',
-                    textAnswer: null,
                     options: ['',''],
-                    correctAnswer: []
+                    correctAnswer: [],
+                    quizId : ''
                 });
             }
 
@@ -157,23 +134,39 @@ const QuestionMaker = ({quizId, questionMark}) => {
         console.log(questions);
     },[questions])
 
+    // Lorem ipsum dolor sit amet, consectetur adipisicing elit. Molestiae praesentium nobis quas iusto, totam vel non minima quae libero eius.
+
+    // Lorem ipsum dolor sit amet consectetur adipisicing elit. Mollitia, nesciunt.
+
+    // Lorem ipsum dolor sit amet consectetur adipisicing elit. Repellat asperiores dolorem obcaecati, blanditiis ducimus repellendus!
+
     return (
         <div className="container mx-auto">
-            <h1 className="text-2xl font-semibold mb-4">Question Maker</h1>
+            {/* <h1 className="text-2xl font-semibold mb-4">Question Maker</h1> */}
 
             {questions.map((question, index) => (
-                <div key={index} className="border border-gray-300 p-4 mb-4 rounded-lg">
-                    <h3 className="font-medium">{index + 1}. {question.question_description}</h3>
-                    <p>Question Type: {question.type}</p>
-                    <ul>
-                        {question.options.map((option, optIndex) => (
-                            <li key={optIndex}>{option}</li>
-                        ))}
-                         <li>{question.numericalAnswer}</li>
-                         <li>{question.booleanAnswer}</li>
-                         <li>{question.textAnswer}</li>
-                    </ul>
-                </div>
+                <div key={index} className="border border-gray-300 p-4 mb-4 rounded-lg shadow-md">
+                <h3 className="text-lg font-semibold mb-2">{index + 1}. {question.question_description}</h3>
+                <p className="text-gray-600 mb-2"><span className="font-semibold">Question Type:</span> {question.type}</p>
+                <ul className="list-disc pl-5">
+                  {question.options.map((option, optIndex) => (
+                    <li key={optIndex} className="flex items-center py-2">
+                      <span className="mr-2 font-semibold">{String.fromCharCode(97 + optIndex)}.</span> {/* a, b, c, d, ... */}
+                      <span className="text-gray-800">{option}</span>
+                      {question.correctAnswer.includes(optIndex.toString()) && (
+                        <span className="ml-2 text-green-500 font-bold">✓</span>
+                      )}
+                    </li>
+                  ))}
+                  {(question.type==='numerical' || question.type==='boolean') && 
+                    <div className="flex">
+                        <p className="font-semibold mr-2">Correct Answer: </p>
+                        <p className="text-gray-600"> {question.correctAnswer[0]}</p>
+                    </div>
+                  }
+                </ul>
+              </div>
+              
             ))}
 
             <div className="border border-gray-300 p-4 mb-4 rounded-lg">
@@ -197,16 +190,53 @@ const QuestionMaker = ({quizId, questionMark}) => {
                     <option value="boolean">Boolean</option>
                 </select>
 
-                {(currentQuestion.type === 'multiple' || currentQuestion.type === 'single') && (
+                {(currentQuestion.type === 'single') && (
                     <div>
                         <label className="block mb-2 font-medium">Options:</label>
                         {currentQuestion.options.map((option, index) => (
-                            <div key={index} className="flex items-center mb-2">
+                            <div key={`question${questions.length}_option${index}`} className="flex items-center mb-2">
                                 <input
-                                    type={currentQuestion.type === 'single' ? 'radio' : 'checkbox'}
-                                    name={`correctAnswer${questions.length}`}
-                                    // checked={currentQuestion.correctAnswer.includes(index.toString())}
-                                    onChange={(e) => handleCorrectAnswerChange(index, e.target.checked)}
+                                    type={'radio'}
+                                    name={`question${questions.length}_option`}
+                                    value={index}
+                                    onChange={handleCorrectAnswerChange}
+                                    className="mr-2"
+                                />
+                                <input
+                                    type={'text'}
+                                    value={option}
+                                    onChange={(e) => handleOptionChange(index, e.target.value)}
+                                    className="mr-2"
+                                />
+                                 <button
+                                    type="button"
+                                    onClick={()=>handleDeleteOption(index)}
+                                    className="bg-blue-500 text-white py-1 px-2 rounded-md"
+                                >
+                                    - Delete Option
+                                </button>
+                            </div>
+                            
+                        ))}
+                                <button
+                                    type="button"
+                                    onClick={handleAddOption}
+                                    className="bg-blue-500 text-white py-1 px-2 rounded-md"
+                                >
+                                    + Add Option
+                                </button>
+                    </div>
+                )}
+                {(currentQuestion.type === 'multiple') && (
+                    <div>
+                        <label className="block mb-2 font-medium">Options:</label>
+                        {currentQuestion.options.map((option, index) => (
+                            <div key={`question${questions.length}_option${index}`} className="flex items-center mb-2">
+                                <input
+                                    type={'checkbox'}
+                                    name={`question${questions.length}_option`}
+                                    value={index}
+                                    onChange={handleCorrectAnswerChange}
                                     className="mr-2"
                                 />
                                 <input
@@ -256,7 +286,7 @@ const QuestionMaker = ({quizId, questionMark}) => {
                                 name="booleanCorrectAnswer"
                                 value="true"
                                 // checked={currentQuestion.correctAnswer === 'true'}
-                                onChange={() => handleBooleanChange('true')}
+                                onChange={handleCorrectAnswerChange}
                                 className="mr-2"
                             />
                             <label className="mr-4">True</label>
@@ -265,7 +295,7 @@ const QuestionMaker = ({quizId, questionMark}) => {
                                 name="booleanCorrectAnswer"
                                 value="false"
                                 // checked={currentQuestion.correctAnswer === 'false'}
-                                onChange={() => handleBooleanChange('false')}
+                                onChange={handleCorrectAnswerChange}
                                 className="mr-2"
                             />
                             <label>False</label>

@@ -2,7 +2,7 @@ import React from 'react'
 import Link from "next/link";
 import QuizListCard from "./QuizListCard";
 
-const QuizList = ({quizData, heading}) => {
+const QuizList = ({quizData, heading }) => {
   return (
     <>
         <h2 className="text-2xl font-semibold mb-4">{heading}</h2>

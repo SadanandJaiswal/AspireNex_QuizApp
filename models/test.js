@@ -21,10 +21,22 @@ const TestSchema = new Schema({
       required: true
     },
     selectedAnswer: {
-      type: Schema.Types.Mixed,
-      required: true
+      type: [String],
+      // required: true
     }
   }],
+  correctAnswerArray: {
+    type: [String],
+    default: []
+  },
+  incorrectAnswerArray: {
+    type: [String],
+    default: []
+  },
+  unAnsweredArray: {
+    type: [String],
+    default: []
+  },
   submittedAt: {
     type: Date,
   },

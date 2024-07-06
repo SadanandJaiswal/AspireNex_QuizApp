@@ -10,21 +10,15 @@ const CreateQuiz = () => {
   const { data: session } = useSession();
 
   const [quizDetails, setQuizDetails] = useState({
-    title: "The Fall of Rome",
-    summary: "This quiz is based on the famous story of fall of rome",
-    duration: "60",
-    // startDate: '',
-    // deadline: ''
-    totalScore: 0,
+    title: "",
+    summary: "",
+    duration: "",
+    positiveScore: "",
+    negativeScore: ""
   });
 
-  const [questionMark, setQuestionMar] = useState({
-    score: null,
-    negativeScore: null
-  })
-
   const [quizId, setQuizId] = useState("");
-  const [quizCreated, setQuizCreated] = useState(false);
+  const [quizCreated, setQuizCreated] = useState(true);
 
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -32,20 +26,6 @@ const CreateQuiz = () => {
       ...prevDetails,
       [name]: value,
     }));
-  };
-
-  const handleScoreChange = (e) => {
-    const { name, value } = e.target;
-    setQuestionMar((prevDetails) => ({
-      ...prevDetails,
-      [name]: value,
-    }));
-  };
-
-  const handleSubmit = (e) => {
-    e.preventDefault();
-    // Handle form submission
-    console.log({ title, summary, duration, startDate, deadline });
   };
 
   const handleInitializeQuiz = async () => {
@@ -74,9 +54,9 @@ const CreateQuiz = () => {
   }, [quizId]);
 
   return (
-    <div className="flex flex-col w-full border-2 justify-center items-center">
+    <div className="flex flex-col w-full justify-center items-center">
       <h1 className="text-4xl font-bold mb-8 ">Create Quiz</h1>
-      <div className="w-full flex flex-col">
+      <div className="w-full flex flex-col border-2">
         <div className="flex w-full">
           <LabelInput quizCreated={quizCreated} name={"title"} value={quizDetails.title} onChange={handleChange} label={"Title"} type={"text"} placeholder={"Enter a Title for Quiz!"} />
           <LabelInput
@@ -100,12 +80,12 @@ const CreateQuiz = () => {
           />
         </div>
         <div className="flex w-full">
-          <LabelInput quizCreated={quizCreated} name={"score"} value={questionMark.score} onChange={handleScoreChange} label={"Score (on each correct)"} type={"number"} placeholder={"Marks Awarded for each Question Correct"} />
+          <LabelInput quizCreated={quizCreated} name={"positiveScore"} value={quizDetails.positiveScore} onChange={handleChange} label={"Score (on each correct)"} type={"number"} placeholder={"Marks Awarded for each Question Correct"} />
           <LabelInput
             quizCreated={quizCreated}
             name={"negativeScore"}
-            value={questionMark.negativeScore}
-            onChange={handleScoreChange}
+            value={quizDetails.negativeScore}
+            onChange={handleChange}
             label={"Negative Mark"}
             type={"number"}
             placeholder={"Marks Deducted on Wrong Answer"}
@@ -128,15 +108,14 @@ const CreateQuiz = () => {
           </button>
         </div>
       </div>
-      <div className="w-full flex flex-col">
-        <h2 className="text-2xl font-bold mb-4">Add Question to the Quiz</h2>
-        <div className="flex w-full flex-col">
-          <p className="block w-full p-2 border bg-transparent">
-            Quiz ID: {quizId}
-          </p>
-          <QuestionMaker quizId={quizId} questionMark={questionMark}/>
-        </div>
-      </div>
+          {quizCreated && 
+            <div className="w-full flex flex-col">
+              <h2 className="text-2xl font-bold mt-4 mb-4">Add Question to the Quiz</h2>
+              <div className="flex w-full flex-col">
+                <QuestionMaker quizId={quizId}/>
+              </div>
+            </div>
+          }
     </div>
   );
 };

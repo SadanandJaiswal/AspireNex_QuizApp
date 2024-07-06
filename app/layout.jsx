@@ -5,6 +5,8 @@ import Nav from "@components/Nav";
 import Provider from "@components/Provider";
 // import Provider from "../components/Provider";
 
+import { ToastContainer } from "react-toastify";
+
 export const metadata = {
   title: "Quiz App",
   description: "Discover & Take Variety of Quizzes",
@@ -22,6 +24,7 @@ const RootLayout = ({ children }) => (
           <Nav />
           {children}
         </main>
+        <ToastContainer />
       </Provider>
     </body>
   </html>

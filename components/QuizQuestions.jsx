@@ -1,19 +1,56 @@
-import React, { useState, useEffect } from 'react';
+"use client";
 
-const QuizQuestions = ({ quizQuestionData }) => {
+import React, { useState, useEffect } from 'react';
+import { signIn, signOut, useSession, getProviders } from "next-auth/react";
+import axios from 'axios';
+
+const QuizQuestions = ({ quizQuestionData, quizId, positiveScore, negativeScore }) => {
+  const { data: session } = useSession();
   const [currentQuestionIndex, setCurrentQuestionIndex] = useState(0); 
   const [answers, setAnswers] = useState([]); 
   const [currentQuestionType, setCurrentQuestionType] = useState('single');
   const [selectedValues, setSelectedValues] = useState([]);
   const [numericalAnswer, setNumericalAnswer] = useState(0);
+  const [visitedArray, setVisitedArray] = useState([]);
+  const [testData, setTestData] = useState({
+    quizId: "",
+    studentId: "",
+    answers: [],
+    // submittedAt
+  })
+
+  useEffect(()=>{
+    setTestData((prevTestData)=>({
+      ...prevTestData, quizId, studentId:session?.user?.id
+    }))
+  },[])
 
 
+  useEffect(()=>{
+    console.log(numericalAnswer)
+  },[numericalAnswer])
+
+  useEffect(()=>{
+    console.log('selectedValues ',selectedValues)
+  },[selectedValues])
+  
+  useEffect(()=>{
+    console.log('answers ',answers)
+  },[answers])
 
   useEffect(() => {
     if (quizQuestionData && quizQuestionData.length > 0) {
       setCurrentQuestionIndex(0); // Set initial question index to 0 when quizQuestionData updates
+      setVisitedArray(Array(quizQuestionData.length).fill(0));
     }
-    setAnswers(new Array(quizQuestionData.length).fill({}));
+
+    const initialAnswers = quizQuestionData.map((question) => ({
+      quizQuestionId: question._id,
+      // selectedAnswer: ['']
+    }));
+
+    setAnswers(initialAnswers);
+
   }, [quizQuestionData]);
 
   useEffect(()=>{
@@ -23,59 +60,45 @@ const QuizQuestions = ({ quizQuestionData }) => {
     setSelectedValues([])
   },[currentQuestionIndex])
 
-  // useEffect(()=>{
-  //   console.log("answer is here ", answers)
-  // },[answers])
-
-  // useEffect(()=>{
-  //   console.log("selectedanswer is here ", selectedValues)
-  // },[selectedValues])
-  
-  // useEffect(()=>{
-  //   console.log("selectedanswer is here ", numericalAnswer)
-  // },[numericalAnswer])
-
-  const goToNextQuestion = () => {
-
+  const addCurrentAnswerToAnswers = () =>{
     const updatedAnswers = [...answers];
-
-    let ansSelected;
+    let ansSelected = [];
     if(currentQuestionType === 'numerical'){
-      ansSelected = [numericalAnswer];
+      const stringNumericalAnswer = numericalAnswer.toString();
+      ansSelected = [stringNumericalAnswer];
     }else{
       ansSelected = selectedValues;
     }
 
     updatedAnswers[currentQuestionIndex] = {
-      quizQuestionId: quizQuestionData[currentQuestionIndex]._id, // Replace with your quizQuestionId field
-      selectedAnswer: ansSelected, // Replace with your selectedAnswer field or structure
+      ...updatedAnswers[currentQuestionIndex],
+      selectedAnswer: ansSelected, 
     };
     setAnswers(updatedAnswers);
+    console.log("success")
+  }
+
+  const goToNextQuestion = () => {
+
+    
+    addCurrentAnswerToAnswers();
+
+    // calculateScore(indexToPass);
 
     if (currentQuestionIndex < quizQuestionData.length - 1) {
       setCurrentQuestionIndex(currentQuestionIndex + 1);
     } else {
-      setCurrentQuestionIndex(0);
-      // console.log("End of quiz questions reached");
-      // Optionally, handle end of quiz logic (e.g., submit answers)
+      // setCurrentQuestionIndex(0);
+      handleSubmit();
     }
 
+    setSelectedValues([]);
   };
 
   const goToPreviousQuestion = () => {
     if (currentQuestionIndex > 0) {
       setCurrentQuestionIndex(currentQuestionIndex - 1);
     }
-  };
-
-  const handleAnswerSelect = (selectedAnswer) => {
-    // Update answers array with selected answer for current question
-    const updatedAnswers = [...answers];
-    updatedAnswers[currentQuestionIndex] = {
-      quizQuestionId: quizQuestionData[currentQuestionIndex]._id, // Replace with your quizQuestionId field
-      selectedAnswer, // Replace with your selectedAnswer field or structure
-    };
-    setAnswers(updatedAnswers);
   };
 
   const handleOptionChange = (event)=>{
@@ -87,14 +110,10 @@ const QuizQuestions = ({ quizQuestionData }) => {
       } else {
         setSelectedValues((prevValues) => prevValues.filter((val) => val !== value));
       }
-    } else if (type === 'radio' || type === 'number') {
+    } else if (type === 'radio') {
+      console.log('option radio ', value);
       setSelectedValues([value]);
     }
-    // if(currentQuestionType==='single' || currentQuestionType==='multiple' || currentQuestionType==='boolean' ){
-    // }
-    // else if(currentQuestionType==='numerical'){
-
-    // }
   }
 
   const handleNumericalOption = (e)=>{
@@ -107,43 +126,31 @@ const QuizQuestions = ({ quizQuestionData }) => {
     setAnswers(updatedAnswers);
   }
 
-  // const handleOptionChange = (index, isChecked, optionIndex) => {
-  //   console.log(index, isChecked, optionIndex);
-  //   console.log(quizQuestionData[currentQuestionIndex]._id);
-  //   console.log(currentQuestionType)
-  //   setAnswers((prevAnswers) => {
-  //     // const currentQuestionType = quizQuestionData[currentQuestionIndex].questionType;
-  
-  //     if (currentQuestionType === 'single') {
-  //       return [
-  //         ...prevAnswers,
-  //         {
-  //           quizQuestionId: quizQuestionData[currentQuestionIndex]._id, // Replace with your quizQuestionId field
-  //           selectedAnswer: [optionIndex],
-  //         },
-  //       ];
-  //     } else if (currentQuestionType === 'multiple') {
-  //       const updatedSelectedAnswers = isChecked
-  //         ? [...prevAnswers[index].selectedAnswer, optionIndex]
-  //         : prevAnswers[index].selectedAnswer.filter((ans) => ans !== optionIndex);
-  
-  //       return prevAnswers.map((answer, idx) =>
-  //         idx === index
-  //           ? {
-  //               quizQuestionId: quizQuestionData[currentQuestionIndex]._id, // Replace with your quizQuestionId field
-  //               selectedAnswer: updatedSelectedAnswers,
-  //             }
-  //           : answer
-  //       );
-  //     }
-  
-  //     return prevAnswers; // Return previous state if neither single nor multiple
-  //   });
-  // };
-  
-
-  const handleSubmit = ()=>{
+  const handleSubmit = async ()=>{
     console.log('answer are here ', answers);
+
+    try{
+      const response = await axios.post(`/api/tests/`, {
+        testData: {...testData, answers},
+      });
+
+      // Call the second API to calculate score using the test ID from the first response
+      if (response) {
+        try {
+          const scoreResponse = await axios.get(`/api/tests/${response.data._id}/score`);
+          console.log("Score calculated successfully", scoreResponse.data);
+        } catch (scoreError) {
+          console.error("Error calculating score:", scoreError.message);
+        }
+      } 
+      
+      alert("test created succesfuly")
+      window.location.href = '/profile';
+    }
+    catch (error) {
+      alert("error is occur");
+      console.error("Error Initializing Quiz:", error);
+    }
   }
 
   // Render component UI
@@ -169,18 +176,23 @@ const QuizQuestions = ({ quizQuestionData }) => {
         {/* Main section for displaying current question */}
         {quizQuestionData.length > 0 && (
           <div className="flex flex-col">
-            <div className="flex justify-between items-center mb-4">
-              <div className="text-lg font-semibold">
-                Question {currentQuestionIndex + 1}: and type is {quizQuestionData[currentQuestionIndex].type}
+            <div className="flex flex-col mb-2 ">
+              <div className="flex justify-between ">
+                <div className="text-lg font-semibold">
+                  Question {currentQuestionIndex + 1}
+                </div>
+                <div className="flex items-center space-x-4 mr-2">
+                  {/* Score */}
+                  <div className="text-green-500"> + {positiveScore}</div>
+                  {/* Negative Score */}
+                  <div className="text-red-500"> - {negativeScore}</div>
+                </div>
               </div>
-              <div className="flex items-center space-x-4">
-                {/* Score */}
-                <div className="text-green-500">Score: {quizQuestionData[currentQuestionIndex].score}</div>
-                {/* Negative Score */}
-                <div className="text-red-500">Negative Score: {quizQuestionData[currentQuestionIndex].negativeScore}</div>
+              <div className="text-sm text-gray-500 font-light">
+                Type: {quizQuestionData[currentQuestionIndex].type}
               </div>
             </div>
-            <div className="mb-4">{quizQuestionData[currentQuestionIndex].question_description}</div>
+            <div className="mb-4 ">{quizQuestionData[currentQuestionIndex].question_description}</div>
            
             <div className="space-y-4">
               {(currentQuestionType === 'single' ) && quizQuestionData[currentQuestionIndex].options.map((option, optionIndex) => (
@@ -190,7 +202,8 @@ const QuizQuestions = ({ quizQuestionData }) => {
                 >
                   <input
                     type={currentQuestionType === 'single' ? 'radio' : 'checkbox'}
-                    name={`question_${currentQuestionIndex}_options`}
+                    name={`question${currentQuestionIndex}`}
+                    // name={`question_${currentQuestionIndex}_options`}
                     value={optionIndex}
                     // checked={
                     //   currentQuestionType === 'single'
@@ -290,19 +303,19 @@ const QuizQuestions = ({ quizQuestionData }) => {
                 className="bg-blue-500 hover:bg-blue-600 text-white font-semibold py-2 px-4 rounded-lg"
                 // disabled={currentQuestionIndex === quizQuestionData.length - 1}
               >
-                {currentQuestionIndex<quizQuestionData.length-1 ?  'Save & Next' : 'Save'}
+                {currentQuestionIndex<quizQuestionData.length-1 ?  'Save & Next' : 'Save & Submit'}
               </button>
             </div>
           </div>
         )}
-        <div className="w-full">
-        <button
+        {/* <div className="w-full">
+           <button
                 onClick={handleSubmit}
                 className="bg-blue-500 hover:bg-blue-600 text-white font-semibold py-2 px-4 rounded-lg"
               >
                 Submit
               </button>
-        </div>
+        </div> */}
       </div>
     </div>
   );

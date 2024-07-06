@@ -1,8 +1,6 @@
-"use client";
-
 import React from 'react'
 
-const QuizStater = ({quizData, quizQuestionData}) => {
+const QuizStater = ({quizData}) => {
   return (
     <>
             <h1 className="text-3xl font-bold mb-4">{quizData.title}</h1>
@@ -18,7 +16,7 @@ const QuizStater = ({quizData, quizQuestionData}) => {
                 </div>
                 <div>
                     <p className="text-sm text-gray-600">Total Questions</p>
-                    <p className="text-xl font-semibold">{quizQuestionData?.length}</p>
+                    <p className="text-xl font-semibold">{quizData.totalQuestion}</p>
                 </div>
             </div>
       </>
