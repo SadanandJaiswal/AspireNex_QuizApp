@@ -75,7 +75,7 @@ const Profile = () => {
 
       <UserProfileDetails user={userDetail} totalQuizGiven={tests?.length}/>
 
-      <div className='flex flex-col items-center justify-center w-full'>
+      <div className='flex flex-col items-center justify-center w-full mb-2'>
         <h2 className="text-2xl font-semibold mb-4">Quiz Taken By You</h2>
           <hr className="w-full max-w-3xl mb-4 border-gray-400" />
         {tests.length > 0 ? (

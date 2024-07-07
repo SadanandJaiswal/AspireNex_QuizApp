@@ -217,24 +217,35 @@ const QuizQuestions = ({ quizQuestionData, quizId, positiveScore, negativeScore,
 
   // Render component UI
   return (
-    <div className="w-full flex">
-      <div className="w-1/4 border-2 p-4">
+    <div className="w-full flex flex-col md:flex-row">
+      <div className="w-full md:w-1/4 border-2 p-4">
         {/* Sidebar for displaying question numbers */}
-        <div className="flex flex-col space-y-4">
+        <div className="flex flex-row md:flex-col space-y-0 md:space-y-4 overflow-auto custom-scrollbar">
           {quizQuestionData.map((question, index) => (
-            <div
-              key={question._id} // Replace with your unique key
-              className={`p-2 cursor-pointer ${
-                index === currentQuestionIndex ? 'bg-gray-200' : ''
-              }`}
-              onClick={() => setCurrentQuestionIndex(index)}
-            >
-              Question {index + 1}
-            </div>
+            <>
+              <div
+                key={question._id} // Replace with your unique key
+                className={`p-2 hidden md:flex cursor-pointer ${
+                  index === currentQuestionIndex ? 'bg-gray-200' : ''
+                }`}
+                onClick={() => setCurrentQuestionIndex(index)}
+              >
+                Question {index + 1}
+              </div>
+              <div
+                key={question._id} // Replace with your unique key
+                className={`p-2 border px-4 flex md:hidden cursor-pointer ${
+                  index === currentQuestionIndex ? 'bg-gray-200' : ''
+                }`}
+                onClick={() => setCurrentQuestionIndex(index)}
+              >
+                {index + 1}
+              </div>
+            </>
           ))}
         </div>
       </div>
-      <div className="w-3/4 border p-4">
+      <div className="w-full md:w-3/4 border p-4">
         {/* Main section for displaying current question */}
         {quizQuestionData.length > 0 && (
           <div className="flex flex-col">

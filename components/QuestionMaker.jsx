@@ -2,6 +2,9 @@
 
 import axios from "axios";
 import React, { useState, useEffect } from "react";
+import { FaPlus, FaTrash } from 'react-icons/fa';
+
+
 
 const QuestionMaker = ({quizId}) => {
     const [questions, setQuestions] = useState([]);
@@ -141,7 +144,7 @@ const QuestionMaker = ({quizId}) => {
     // Lorem ipsum dolor sit amet consectetur adipisicing elit. Repellat asperiores dolorem obcaecati, blanditiis ducimus repellendus!
 
     return (
-        <div className="container mx-auto">
+        <div className="container ">
             {/* <h1 className="text-2xl font-semibold mb-4">Question Maker</h1> */}
 
             {questions.map((question, index) => (
@@ -206,29 +209,31 @@ const QuestionMaker = ({quizId}) => {
                                     type={'text'}
                                     value={option}
                                     onChange={(e) => handleOptionChange(index, e.target.value)}
-                                    className="mr-2"
+                                    className="mr-2 p-1 mb-1 w-full max-w-[500px]"
                                 />
                                  <button
                                     type="button"
                                     onClick={()=>handleDeleteOption(index)}
-                                    className="bg-blue-500 text-white py-1 px-2 rounded-md"
+                                    className=" text-red-400 text-lg bg-white py-2 border-2 px-2 rounded-md"
                                 >
-                                    - Delete Option
+                                    {/* - Delete Option */}
+                                    <FaTrash/>
+                                    {/* - Delete <span className="hidden sm:block">Option</span> */}
                                 </button>
                             </div>
                             
                         ))}
-                                <button
+                                 <button
                                     type="button"
                                     onClick={handleAddOption}
-                                    className="bg-blue-500 text-white py-1 px-2 rounded-md"
+                                    className="bg-blue-500 text-white py-1 px-2 rounded-md my-1"
                                 >
                                     + Add Option
                                 </button>
                     </div>
                 )}
                 {(currentQuestion.type === 'multiple') && (
-                    <div>
+                    <div className="">
                         <label className="block mb-2 font-medium">Options:</label>
                         {currentQuestion.options.map((option, index) => (
                             <div key={`question${questions.length}_option${index}`} className="flex items-center mb-2">
@@ -243,22 +248,24 @@ const QuestionMaker = ({quizId}) => {
                                     type={'text'}
                                     value={option}
                                     onChange={(e) => handleOptionChange(index, e.target.value)}
-                                    className="mr-2"
+                                    className="mr-2 p-1 mb-1 w-full max-w-[500px]"
                                 />
                                  <button
                                     type="button"
                                     onClick={()=>handleDeleteOption(index)}
-                                    className="bg-blue-500 text-white py-1 px-2 rounded-md"
+                                    className=" text-red-400 text-lg bg-white py-2 border-2 px-2 rounded-md"
                                 >
-                                    - Delete Option
+                                    {/* - Delete Option */}
+                                    <FaTrash/>
+                                    {/* - Delete <span className="hidden sm:block">Option</span> */}
                                 </button>
                             </div>
                             
                         ))}
-                                <button
+                                 <button
                                     type="button"
                                     onClick={handleAddOption}
-                                    className="bg-blue-500 text-white py-1 px-2 rounded-md"
+                                    className="bg-blue-500 text-white py-1 px-2 rounded-md my-1"
                                 >
                                     + Add Option
                                 </button>
@@ -307,19 +314,22 @@ const QuestionMaker = ({quizId}) => {
                 <button
                     type="button"
                     onClick={handleAddQuestion}
-                    className="bg-green-500 text-white py-2 px-4 rounded-md"
+                    className="bg-green-500 text-white py-2 px-4 rounded-md border-2 border-blue-400 my-2"
                 >
                     Add Question
                 </button>
             </div>
 
-            <button
-                    type="button"
-                    onClick={handleSubmit}
-                    className="bg-green-500 text-white py-2 px-4 rounded-md"
-                >
-                    Submit
-                </button>
+            <div className="flex justify-center items-center w-full mb-8">
+                <button
+                        type="button"
+                        onClick={handleSubmit}
+                        className="  bg-green-500 text-white py-2 px-4 rounded-md min-w-[200px]"
+                    >
+                        Submit Quiz
+                    </button>
+            </div>
+
         </div>
     );
 };

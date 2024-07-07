@@ -20,7 +20,7 @@ const UserProfileDetails = ({ user, totalQuizGiven }) => {
   };
 
   return (
-    <div className="w-full  p-8 pt-0">
+    <div className="w-full  p-8 pt-0 justify-center">
       <div className="w-full pb-8 flex items-center justify-center text-4xl font-bold text-indigo-600 ">
         My Profile
       </div>
@@ -28,13 +28,13 @@ const UserProfileDetails = ({ user, totalQuizGiven }) => {
 
 
         <div className="w-full flex flex-col">
-          <div className="flex w-full">
-              <ProfileDetail label={"Email"} value={email}/>
-              <ProfileDetail label={"Username"} value={username}/>
+          <div className="flex flex-col md:flex-row w-full">
+              <ProfileDetail label={"Email"} value={email} edit/>
+              <ProfileDetail label={"Username"} value={username} edit/>
           </div>
-          <div className="flex w-full">
-              <ProfileDetail label={"No of Quiz Taken"} value={totalQuizGiven}/>
-              <ProfileDetail label={"Account Created At"} value={formatDateTime(createdAt)}/>
+          <div className="flex flex-col md:flex-row w-full">
+              <ProfileDetail label={"No of Quiz Taken"} value={totalQuizGiven} />
+              <ProfileDetail label={"Account Created At"} value={formatDateTime(createdAt)} />
           </div>
         </div>
 
@@ -45,7 +45,7 @@ const UserProfileDetails = ({ user, totalQuizGiven }) => {
 
 export default UserProfileDetails;
 
-const ProfileDetail = ({ label, value, borderColor = 'border-indigo-500' }) => {
+const ProfileDetail = ({ label, value, edit, borderColor = 'border-indigo-500' }) => {
   return (
     <div className={`flex justify-between mb-4 mx-4 w-full shadow-lg px-4 py-2 border-l-[6px] ${borderColor} bg-white`}>
       <div className="">
@@ -56,11 +56,13 @@ const ProfileDetail = ({ label, value, borderColor = 'border-indigo-500' }) => {
           {value}
         </p>
       </div>
-      <div className=" flex justify-center items-center">
-        <button className="text-2xl text-gray-500 hover:text-gray-700">
-          <FontAwesomeIcon icon={faEdit} />
-        </button>
-      </div>
+      {edit && 
+        <div className=" flex justify-center items-center">
+          <button className="text-2xl text-gray-500 hover:text-gray-700">
+            <FontAwesomeIcon icon={faEdit} />
+          </button>
+        </div>
+      }
     </div>
   );
 };

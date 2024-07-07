@@ -18,7 +18,7 @@ const CreateQuiz = () => {
   });
 
   const [quizId, setQuizId] = useState("");
-  const [quizCreated, setQuizCreated] = useState(false);
+  const [quizCreated, setQuizCreated] = useState(true);
 
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -57,7 +57,7 @@ const CreateQuiz = () => {
     <div className="flex flex-col w-full justify-center items-center">
       <h1 className="text-4xl font-bold mb-8 ">Create Quiz</h1>
       <div className="w-full flex flex-col border-2">
-        <div className="flex w-full">
+        <div className="flex flex-col sm:flex-row px-2 sm:px-0 w-full">
           <LabelInput quizCreated={quizCreated} name={"title"} value={quizDetails.title} onChange={handleChange} label={"Title"} type={"text"} placeholder={"Enter a Title for Quiz!"} />
           <LabelInput
             quizCreated={quizCreated}
@@ -69,7 +69,7 @@ const CreateQuiz = () => {
             placeholder={"Enter a Title for Quiz!"}
           />
         </div>
-        <div className="flex w-full">
+        <div className="flex px-2 sm:px-0 w-full">
           <LabelTextArea
             quizCreated={quizCreated}
             name={"summary"}
@@ -79,7 +79,7 @@ const CreateQuiz = () => {
             placeholder={"Give Description of the Quiz!"}
           />
         </div>
-        <div className="flex w-full">
+        <div className="flex flex-col sm:flex-row w-full px-2 sm:px-0">
           <LabelInput quizCreated={quizCreated} name={"positiveScore"} value={quizDetails.positiveScore} onChange={handleChange} label={"Score (on each correct)"} type={"number"} placeholder={"Marks Awarded for each Question Correct"} />
           <LabelInput
             quizCreated={quizCreated}
@@ -91,7 +91,7 @@ const CreateQuiz = () => {
             placeholder={"Marks Deducted on Wrong Answer"}
           />
         </div>
-        <div className="w-full flex justify-center space-x-4 mt-4">
+        <div className="w-full flex justify-center space-x-4 mt-3">
           {!quizCreated && (
             <button
               onClick={handleInitializeQuiz}
@@ -100,12 +100,15 @@ const CreateQuiz = () => {
               Create Quiz
             </button>
           )}
-          <button
-            onClick={() => setQuizCreated(false)}
-            className="px-4 py-2 bg-gray-600 text-white font-semibold rounded-md hover:bg-gray-700 transition duration-300"
-          >
-            Edit
-          </button>
+          {
+            quizCreated && 
+            <button
+              onClick={() => setQuizCreated(false)}
+              className="px-4 mb-6 min-w-[100px] py-2 bg-gray-600 text-white font-semibold rounded-md hover:bg-gray-700 transition duration-300"
+            >
+              Edit Quiz 
+            </button>
+          }
         </div>
       </div>
           {quizCreated && 
@@ -132,7 +135,7 @@ const LabelInput = ({
   placeholder,
 }) => {
   return (
-    <div className="mb-4 mx-4 w-full">
+    <div className="mb-4 mx-0 md:mx-4 sm:mx-2 w-full ">
       <label htmlFor={name} className="block text-lg font-semibold mb-2">
         {label}
       </label>
@@ -145,7 +148,7 @@ const LabelInput = ({
           name={name}
           onChange={onChange}
           placeholder={placeholder}
-          className="w-[100%] px-2 border-0 border-b-2 border-gray-300  focus:ring-0 focus:border-b-indigo-600 focus:outline-none bg-transparent rounded-md"
+          className="w-full px-2 pb-1 border-0 border-b-2 border-gray-400  focus:ring-0 focus:border-b-indigo-600 focus:outline-none bg-transparent rounded-md"
           required
         />
       )}
@@ -161,7 +164,7 @@ const LabelTextArea = ({
   placeholder,
 }) => {
   return (
-    <div className="mb-4 mx-4 w-full">
+    <div className="mb-4 mx-0 md:mx-4 sm:mx-2 sm:mx-4 w-full">
       <label htmlFor={name} className="block text-lg font-semibold mb-2">
         {label}
       </label>
@@ -173,7 +176,7 @@ const LabelTextArea = ({
           name={name}
           onChange={onChange}
           placeholder={placeholder}
-          className="block w-full p-2 border border-2 border-gray-300 focus:border-indigo-600 focus:outline-none focus:ring-0 peer bg-transparent"
+          className="block w-full p-2 border border-2 border-gray-400 focus:border-indigo-600 focus:outline-none focus:ring-0 peer bg-transparent"
           required
         />
       )}

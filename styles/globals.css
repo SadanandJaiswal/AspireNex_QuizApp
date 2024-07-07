@@ -65,6 +65,19 @@
   opacity: 0.15;
 }
 
+.custom-scrollbar::-webkit-scrollbar {
+  height: 2px;
+}
+
+.custom-scrollbar::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+.custom-scrollbar::-webkit-scrollbar-thumb {
+  background-color: blue;
+  border-radius: 10px;
+}
+
 @media screen and (max-width: 640px) {
   .main {
     padding: 0;

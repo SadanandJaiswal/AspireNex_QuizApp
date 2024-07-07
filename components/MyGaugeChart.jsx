@@ -21,7 +21,7 @@ const MyGaugeChart = ({ correct, incorrect, unanswered }) => {
           textColor="#000000"
           needleColor="#345243"
           // animate={false}
-          formatTextValue={(value) => `Score: ${value}%`}
+          formatTextValue={(value) => `Correct: ${value}%`}
         />
       </div>
 
