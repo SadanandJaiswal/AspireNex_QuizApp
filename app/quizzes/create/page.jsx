@@ -18,7 +18,7 @@ const CreateQuiz = () => {
   });
 
   const [quizId, setQuizId] = useState("");
-  const [quizCreated, setQuizCreated] = useState(true);
+  const [quizCreated, setQuizCreated] = useState(false);
 
   const handleChange = (e) => {
     const { name, value } = e.target;
